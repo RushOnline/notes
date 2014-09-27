@@ -1,4 +1,12 @@
 #!/bin/sh
 
-stty -F /dev/ttyUSB0 hupcl
-/usr/bin/avrdude $@
+PORT="$(arduino-uart-dev)"
+
+if [ -z "$PORT" ]; then
+#    echo "UART Bridge not detected. Check connection."
+    PORT="UART_NOT_FOUND"
+else
+    stty -F $PORT hupcl
+fi
+
+/usr/bin/avrdude -P $PORT $@

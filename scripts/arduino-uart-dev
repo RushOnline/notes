@@ -1,0 +1,21 @@
+#!/bin/sh
+
+
+#lsusb | grep myAVR
+
+MODALIASES="$(sudo find /sys -name modalias)"
+
+DEVNODE="$(grep -i ^usb:v10C4pEA60 $MODALIASES 2>/dev/null | sed 's/modalias.*//g')"
+
+[ -n "$DEVNODE" ] || exit 1
+
+DEVNAME=$(ls -1 "$DEVNODE" | grep ^tty)
+
+[ -n "$DEVNAME" ] || exit 2
+
+
+DEVPATH="/dev/$DEVNAME"
+
+[ -w $DEVPATH ] || exit 1
+
+echo $DEVPATH
